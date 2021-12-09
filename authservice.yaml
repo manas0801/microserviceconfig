@@ -6,18 +6,25 @@ eureka:
     serviceUrl:
       defaultZone: http://peer-1-server.com:9001/eureka, http://peer-2-server.com:9002/eureka, http://peer-3-server.com:9003/eureka
 
-  resilience4j.circuitbreaker:
-    instances:
-      backendA:
-        registerHealthIndicator: true
-        slidingWindowSize: 100
-      backendB:
-        registerHealthIndicator: true
+resilience4j.circuitbreaker:
+    configs:
+      shared:
+        registerHealthIndicator: false
+        slidingWindowType: count_based
         slidingWindowSize: 10
-        permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowType: TIME_BASED
         minimumNumberOfCalls: 5
-        waitDurationInOpenState: 50s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
         failureRateThreshold: 20
         eventConsumerBufferSize: 10
-        recordFailurePredicate: io.github.robwin.exception.RecordFailurePredicate
+        slowCallDurationThreshold: 3s
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+        ignoreExceptions:
+          - io.github.robwin.exception.BusinessException
+    instances:
+      backendA:
+        baseConfig: shared
