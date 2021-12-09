@@ -5,3 +5,19 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://peer-1-server.com:9001/eureka, http://peer-2-server.com:9002/eureka, http://peer-3-server.com:9003/eureka
+
+  resilience4j.circuitbreaker:
+    instances:
+      backendA:
+        registerHealthIndicator: true
+        slidingWindowSize: 100
+      backendB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: TIME_BASED
+        minimumNumberOfCalls: 5
+        waitDurationInOpenState: 50s
+        failureRateThreshold: 20
+        eventConsumerBufferSize: 10
+        recordFailurePredicate: io.github.robwin.exception.RecordFailurePredicate
