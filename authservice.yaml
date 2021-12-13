@@ -6,7 +6,7 @@ eureka:
     serviceUrl:
       defaultZone: http://peer-1-server.com:9001/eureka, http://peer-2-server.com:9002/eureka, http://peer-3-server.com:9003/eureka
 
-greeting.message: "Good News" 
+greeting.message: "Bad News"
 resilience4j.circuitbreaker:
     configs:
       shared:
